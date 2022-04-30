@@ -10,8 +10,9 @@ def typingPrint(text):
     sys.stdout.write(character)
     sys.stdout.flush()
     time.sleep(0.05)
+  time.sleep(0.5)
   print("")
-
+  
 if platform.system() == "Linux" or platform.system() == "Darwin":
   slash = "/"
 elif platform.system() == "Windows":
@@ -30,23 +31,22 @@ def editModules(mod, edit):
   j = json.loads(f.read())
   f.close()
   j[f"module{mod}"] = edit
-  j = json.dumps(j)
+  j = json.dumps(j, indent=2)
   f = open(f"CharlesDarwin.json", "w")
   f.write(j)
   f.close()
-
+editModules(7,6666)
 def deleteModule(mod):
   global modules
-  if os.path.exists(f"CharlesDarwin.json"):
-    f = open(f"CharlesDarwin.json", "r")
-    j = json.loads(f.read())
-    f.close()
-    j[f"module{mod}"] = edit
-    j = json.dumps(j)
+  f = open(f"CharlesDarwin.json", "r")
+  j = json.loads(f.read())
+  f.close()
+  if f"module{mod}" in j:
+    del j[f"module{mod}"]
+    j = json.dumps(j, indent=2)
     f = open(f"CharlesDarwin.json", "w")
     f.write(j)
     f.close()
-    del thisdict["model"]
     modules -= 1
   else:
     typingPrint("The module does not exist")
@@ -128,7 +128,6 @@ def get_action():
     if "SHOOT" in action or "shoot" in action:
       if module in workers:
         typingPrint("You aim for the worker")
-        time.sleep(0.5)
         flame_ammo -= 1
         if randrange(0,6) > 0:
           typingPrint("You killed the worker doing it's job!")
@@ -137,7 +136,6 @@ def get_action():
           typingPrint("You missed and probably made a hole in the ship")
       elif module == q_module:
         typingPrint("You aim for the queen")
-        time.sleep(1)
         flame_ammo -= 1
         if randrange(0,6) > 3:
           typingPrint("You killed the queen!")
@@ -152,7 +150,6 @@ def get_action():
       typingPrint("Invalid Action")
     if module in workers:
         typingPrint("The workers aim for you")
-        time.sleep(0.5)
         flame_ammo -= 1
         if randrange(0,6) <= 1:
           typingPrint("The workers shot you")
@@ -161,7 +158,6 @@ def get_action():
           typingPrint("They missed you continue to survive")
     if module == q_module:
         typingPrint("The Queen aims for you")
-        time.sleep(0.5)
         flame_ammo -= 1
         if randrange(0,6) <= 3:
           typingPrint("The workers shot you")
@@ -181,8 +177,7 @@ typingPrint(
    ██║   ██╔══╝  ██║     ██║██║   ██║██║╚██╔╝██║
    ██║   ███████╗███████╗██║╚██████╔╝██║ ╚═╝ ██║
    ╚═╝   ╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝
-                                                
-      """)
+""")
 
 setup()
 while alive:
@@ -194,4 +189,4 @@ while alive:
     typingPrint("You died after the ship lost power sucking you out into space and leaving you a flash frozen corpse endlessly drifting in the void")
   if won:
     typingPrint("You won")
-  typingPrint("\n")
+  print("\n")
