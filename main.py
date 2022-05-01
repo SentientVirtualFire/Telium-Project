@@ -1,9 +1,5 @@
-import os
 from random import randrange
-import platform
-import time
-import sys
-import json
+import platform,time,sys,json
 
 def typingPrint(text):
   for character in text:
@@ -35,7 +31,7 @@ def editModules(mod, edit):
   f = open(f"CharlesDarwin.json", "w")
   f.write(j)
   f.close()
-editModules(7,6666)
+  
 def deleteModule(mod):
   global modules
   f = open(f"CharlesDarwin.json", "r")
@@ -51,34 +47,54 @@ def deleteModule(mod):
   else:
     typingPrint("The module does not exist")
     
+def modulesGen(count):
+  for i in range(1,count+1):
+    if i == 1:
+      a = 0
+    else:
+      a = i - 1
+    if i == count:
+      b = 0
+    else:  
+      b = i + 1
+    if randrange(1,5) == 1 and count - i >= 10:
+      c = randrange(i+2,i+10)
+    else:
+      c = 0
+    if randrange(1,5) == 1 and i >= 11:
+      d = randrange(i-10, i-2)
+    else:
+      d = 0
+    editModules(i, f"{a} {b} {c} {d}")
 
-modules = 12
+modules = 100
+modulesGen(modules)
 start_module = 1
 module = start_module
 q_module = randrange(10,modules)
 moves = getModule(module).split()
 
-health = 100
+health = 10*modules
 alive = True
-ship_power = 500
-flame_ammo = 5
+ship_power = 40*modules
+flame_ammo = round(modules/2)
 won = False
 vents = [] 
 info_panels = []
 workers = []
 
 def setup():
-  for i in range(randrange(2,6)):
+  for i in range(randrange(2,round(modules/2))):
     vent = randrange(start_module+1,modules)
     while vent in vents:
       vent = randrange(start_module+1,modules)
     vents.append(vent)
-  for i in range(randrange(2,3)):
+  for i in range(randrange(2,round(modules/4))):
     panel = randrange(start_module+1,modules)
     while panel in info_panels:
       panel = randrange(start_module+1,modules)
     info_panels.append(panel)
-  for i in range(randrange(2,6)):
+  for i in range(randrange(2,round(modules/2))):
     workers.append(randrange(start_module+1,modules))
 
 def get_action():
@@ -121,11 +137,11 @@ def get_action():
       if inp in moves:
         module = inp
         ship_power -= 25
-    if "VENT" in action or "vent" in action:
+    elif "VENT" in action or "vent" in action:
       typingPrint("You are being moved elsewhere in the ship")
       module = randrange(start_module, modules)
       ship_power -= 50
-    if "SHOOT" in action or "shoot" in action:
+    elif "SHOOT" in action or "shoot" in action:
       if module in workers:
         typingPrint("You aim for the worker")
         flame_ammo -= 1
@@ -142,7 +158,7 @@ def get_action():
           won = True
         else:
           typingPrint("You missed and probably made a hole in the ship")
-    if "INFO PANEL" in action or "info panel" in action:
+    elif "INFO PANEL" in action or "info panel" in action:
       typingPrint("You read the Info Panel:")
       typingPrint("The Queen is in module"+str(q_module))
       ship_power -= 100
