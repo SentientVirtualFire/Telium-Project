@@ -1,5 +1,6 @@
 from random import randrange
-import platform,time,sys,json
+from turtle import *
+import platform,time,sys,json, turtle
 
 def typingPrint(text):
   for character in text:
@@ -14,6 +15,10 @@ if platform.system() == "Linux" or platform.system() == "Darwin":
 elif platform.system() == "Windows":
   slash = "\\"
 
+def write(text, move=15):
+    turtle.write(text)
+    setposition((position()[0],position()[1]-move))
+    time.sleep(0.5)
 
 def getModule(mod):
   f = open(f"CharlesDarwin.json", "r")
@@ -45,7 +50,7 @@ def deleteModule(mod):
     f.close()
     modules -= 1
   else:
-    typingPrint("The module does not exist")
+    write("The module does not exist")
     
 def modulesGen(count):
   for i in range(1,count+1):
@@ -66,7 +71,6 @@ def modulesGen(count):
     else:
       d = 0
     editModules(i, f"{a} {b} {c} {d}")
-
 modules = 100
 modulesGen(modules)
 start_module = 1
@@ -102,15 +106,15 @@ def get_action():
   global workers, q_module, flame_ammo, won, health
   
   moves = getModule(module).split()
-  typingPrint("Module: "+ str(module))
-  typingPrint("Health: "+ str(health))
-  typingPrint("Flamethrower Juice: "+ str(flame_ammo))
-  typingPrint("Ship power: "+ str(ship_power))
-  typingPrint("You can go to module(s):")
+  write("Module: "+ str(module))
+  write("Health: "+ str(health))
+  write("Flamethrower Juice: "+ str(flame_ammo))
+  write("Ship power: "+ str(ship_power))
+  write("You can go to module(s):")
   
   for i in moves:
     if int(i) > 0:
-      typingPrint(str(i))
+      write(str(i))
 
   contents = []
   module = int(module)
@@ -123,70 +127,74 @@ def get_action():
   if module == q_module:
     contents.append("-The Queen")
   if len(contents) > 0:
-    typingPrint("Your room contains:")
+    write("Your room contains:")
     for i in contents:
-      typingPrint(i+"\n")
+      write(i+"\n")
 
-  typingPrint("What do you want to do next ? (MOVE, VENT, SHOOT, INFO PANEL)")
+  write("What do you want to do next ? (MOVE, VENT, SHOOT, INFO PANEL)")
   actions = ["MOVE", "VENT", "SHOOT", "INFO PANEL", "move", "vent", "shoot", "info panel"]
-  action = input(">")
+  action = textinput("Action", ">")
   if action in actions:
     if "MOVE" in action or "move" in action:
-      typingPrint("Enter module to move to")
-      inp = input(">")
+      write("Enter module to move to")
+      inp = textinput("Position", ">")
       if inp in moves:
         module = inp
         ship_power -= 25
     elif "VENT" in action or "vent" in action:
-      typingPrint("You are being moved elsewhere in the ship")
+      write("You are being moved elsewhere in the ship")
       module = randrange(start_module, modules)
       ship_power -= 50
     elif "SHOOT" in action or "shoot" in action:
       if module in workers:
-        typingPrint("You aim for the worker")
+        write("You aim for the worker")
         flame_ammo -= 1
         if randrange(0,6) > 0:
-          typingPrint("You killed the worker doing it's job!")
+          write("You killed the worker doing it's job!")
           workers.remove(module)
         else:
-          typingPrint("You missed and probably made a hole in the ship")
+          write("You missed and probably made a hole in the ship")
       elif module == q_module:
-        typingPrint("You aim for the queen")
+        write("You aim for the queen")
         flame_ammo -= 1
         if randrange(0,6) > 3:
-          typingPrint("You killed the queen!")
+          write("You killed the queen!")
           won = True
         else:
-          typingPrint("You missed and probably made a hole in the ship")
+          write("You missed and probably made a hole in the ship")
     elif "INFO PANEL" in action or "info panel" in action:
-      typingPrint("You read the Info Panel:")
-      typingPrint("The Queen is in module"+str(q_module))
+      write("You read the Info Panel:")
+      write("The Queen is in module"+str(q_module))
       ship_power -= 100
     else:
-      typingPrint("Invalid Action")
+      write("Invalid Action")
     if module in workers:
-        typingPrint("The workers aim for you")
+        write("The workers aim for you")
         flame_ammo -= 1
         if randrange(0,6) <= 1:
-          typingPrint("The workers shot you")
+          write("The workers shot you")
           health -= 25
         else:
-          typingPrint("They missed you continue to survive")
+          write("They missed you continue to survive")
     if module == q_module:
-        typingPrint("The Queen aims for you")
+        write("The Queen aims for you")
         flame_ammo -= 1
         if randrange(0,6) <= 3:
-          typingPrint("The workers shot you")
+          write("The workers shot you")
           health -= 35
         else:
-          typingPrint("They missed you continue to survive")
+          write("They missed you continue to survive")
   else:
-    typingPrint("Invalid Action")
+    write("Invalid Action")
 
-typingPrint("WELCOME TO:")
+ht()
+setup()
+penup()
+setposition(-200,200)
+write("WELCOME TO:", move=120)
 time.sleep(0.5)
-typingPrint(
-      """
+write(
+"""
 ████████╗███████╗██╗     ██╗██╗   ██╗███╗   ███╗
 ╚══██╔══╝██╔════╝██║     ██║██║   ██║████╗ ████║
    ██║   █████╗  ██║     ██║██║   ██║██╔████╔██║
@@ -195,14 +203,14 @@ typingPrint(
    ╚═╝   ╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝
 """)
 
-setup()
 while alive:
   get_action()
   if health <= 0:
     alive = False 
-    typingPrint("You died after sustaining too much damage")
+    write("You died after sustaining too much damage")
   if ship_power <= 0:
-    typingPrint("You died after the ship lost power sucking you out into space and leaving you a flash frozen corpse endlessly drifting in the void")
+    write("You died after the ship lost power sucking you out into space and leaving you a flash frozen corpse endlessly drifting in the void")
   if won:
-    typingPrint("You won")
+    write("You won")
   print("\n")
+  
